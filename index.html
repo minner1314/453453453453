@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>✨ 表白蜜语 · 罗泽亨 ✨</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none; /* 让界面更干净，避免拖动文本 */
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #ffe6f0 0%, #ffd9e8 100%);
+            font-family: 'Segoe UI', 'Quicksand', system-ui, -apple-system, 'Poppins', 'HarmonyOS Sans', 'Microsoft YaHei', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 浪漫飘浮的小爱心 */
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0.5;
+            animation: floatHeart linear infinite;
+            color: #ff99bb;
+        }
+
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-10vh) rotate(20deg);
+                opacity: 0;
+            }
+        }
+
+        /* 主卡片 */
+        .card {
+            position: relative;
+            z-index: 10;
+            max-width: 550px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(2px);
+            border-radius: 64px 48px 80px 48px;
+            box-shadow: 0 25px 45px rgba(255, 105, 180, 0.25), 0 10px 20px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 200, 220, 0.7);
+        }
+
+        /* 顶部可爱区域 */
+        .header-romance {
+            background: #ffb7c5;
+            padding: 30px 20px 20px;
+            text-align: center;
+            color: white;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-romance h1 {
+            font-size: 2.2rem;
+            letter-spacing: 2px;
+            word-break: keep-all;
+        }
+
+        .header-romance h1 span {
+            display: inline-block;
+            animation: bounce 1.2s infinite ease;
+        }
+
+        @keyframes bounce {
+            0%,100%{ transform: translateY(0); }
+            50%{ transform: translateY(-6px); }
+        }
+
+        .sub {
+            font-size: 1rem;
+            margin-top: 12px;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        /* 主体内容 */
+        .quiz-container {
+            padding: 30px 28px 40px;
+        }
+
+        /* 进度展示 */
+        .progress-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: #c06d82;
+            font-weight: 600;
+        }
+
+        .progress-bar-bg {
+            flex: 1;
+            height: 8px;
+            background: #ffe2e8;
+            border-radius: 20px;
+            margin: 0 12px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: #ff7b9c;
+            border-radius: 20px;
+            transition: width 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+
+        /* 题目卡片 */
+        .question-box {
+            background: white;
+            border-radius: 40px;
+            padding: 28px 20px 20px;
+            margin-bottom: 28px;
+            box-shadow: 0 12px 25px rgba(255, 120, 150, 0.15);
+            transition: all 0.2s;
+        }
+
+        .question-text {
+            font-size: 1.55rem;
+            font-weight: 700;
+            color: #a1324e;
+            line-height: 1.3;
+            margin-bottom: 28px;
+            text-align: center;
+            padding: 0 8px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .option {
+            background: #fff5f7;
+            border-radius: 60px;
+            padding: 14px 20px;
+            border: 1.5px solid #ffcdda;
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: #a52a4a;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .option:hover {
+            background: #ffeef2;
+            border-color: #ff8fab;
+            transform: scale(0.98);
+        }
+
+        .option.selected {
+            background: #ffd2df;
+            border-color: #ef5a8a;
+            color: #b13b5e;
+            box-shadow: 0 2px 8px rgba(239,90,138,0.2);
+        }
+
+        .option-prefix {
+            width: 32px;
+            height: 32px;
+            background: #ffb7c5;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* 按钮区 */
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            gap: 15px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 0;
+            border-radius: 50px;
+            border: none;
+            font-weight: 700;
+            font-size: 1.05rem;
+            cursor: pointer;
+            transition: 0.2s;
+            background: #ffdde4;
+            color: #b34262;
+        }
+
+        .btn-primary {
+            background: #ff8dab;
+            color: white;
+            box-shadow: 0 5px 10px rgba(255, 100, 130, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #ff6f96;
+            transform: scale(0.96);
+        }
+
+        .btn-secondary {
+            background: #f5cdd8;
+            color: #b84c6c;
+        }
+
+        .btn-secondary:hover {
+            background: #f0bfcc;
+        }
+
+        /* 最终表白区域 */
+        .love-letter {
+            text-align: center;
+            background: linear-gradient(135deg, #fff0f3, #ffe4ec);
+            border-radius: 48px;
+            padding: 30px 20px;
+            margin-top: 15px;
+            animation: fadeGlow 1s ease;
+        }
+
+        @keyframes fadeGlow {
+            from { opacity: 0; transform: scale(0.96);}
+            to { opacity: 1; transform: scale(1);}
+        }
+
+        .love-letter h2 {
+            font-size: 2rem;
+            color: #e6436e;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        .love-letter p {
+            font-size: 1.2rem;
+            line-height: 1.5;
+            color: #9f3e5c;
+            margin: 20px 0;
+            font-weight: 500;
+        }
+
+        .big-heart {
+            font-size: 70px;
+            margin: 15px 0;
+            animation: heartbeat 1.2s infinite;
+        }
+
+        @keyframes heartbeat {
+            0%,100%{ transform: scale(1);}
+            50%{ transform: scale(1.2); text-shadow: 0 0 10px #ff99bb;}
+        }
+
+        .reset-btn {
+            background: #ff7e9e;
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 60px;
+            font-size: 1rem;
+            font-weight: bold;
+            margin-top: 25px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .reset-btn:hover {
+            background: #e96486;
+            transform: scale(0.97);
+        }
+
+        footer {
+            font-size: 0.7rem;
+            text-align: center;
+            padding: 20px 0 15px;
+            color: #c590a1;
+        }
+
+        @media (max-width: 500px) {
+            .question-text { font-size: 1.3rem; }
+            .option { padding: 10px 16px; font-size: 0.95rem; }
+            .card { border-radius: 48px 36px 60px 36px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="floating-hearts" id="heartsContainer"></div>
+
+<div class="card" id="app">
+    <div class="header-romance">
+        <h1>💗 罗泽亨 💗</h1>
+        <div class="sub">✨ 关于你的心动问卷 ✨</div>
+    </div>
+    
+    <div class="quiz-container" id="quizPanel">
+        <!-- 进度条区域 -->
+        <div class="progress-area">
+            <span>🌸 答题进度</span>
+            <div class="progress-bar-bg"><div class="progress-fill" id="progressFill"></div></div>
+            <span id="progressText">0/3</span>
+        </div>
+
+        <!-- 题目动态渲染区 -->
+        <div id="questionsArea"></div>
+
+        <div class="actions">
+            <button class="btn btn-secondary" id="prevBtn">◀ 上一题</button>
+            <button class="btn btn-primary" id="nextBtn">下一题 ▶</button>
+        </div>
+        <footer>❤️ 每一题都是心动暗号 ❤️</footer>
+    </div>
+</div>
+
+<script>
+    // ------------------- 浪漫题目库 (围绕罗泽亨) -------------------
+    const QUESTIONS = [
+        {
+            text: "✨ 罗泽亨最让人心动的特质是？ ✨",
+            options: ["🌟 温柔似水的眼神", "🌻 像阳光一样的笑容", "🎧 认真专注的侧脸", "💌 所有的一切都让人着迷"]
+        },
+        {
+            text: "🎀 如果要用一种甜点形容罗泽亨，你会选？ 🎀",
+            options: ["🍰 草莓奶油蛋糕", "🍫 丝滑巧克力慕斯", "🍬 软糖小熊 (甜蜜软萌)", "🍦 香草冰淇淋 (清爽又治愈)"]
+        },
+        {
+            text: "💖 你希望和罗泽亨一起完成的浪漫小事？ 💖",
+            options: ["🌅 看一次海边日出", "🎡 一起坐摩天轮到最高点", "📖 雨天窝在沙发看电影", "🌸 手牵手走过开满花的街道"]
+        }
+    ];
+
+    // 正确答案索引 (0~3之间均可，为了浪漫氛围，没有绝对错误，但第3题每个都很甜。不过既然是“答题性质”，全部选对才算解锁表白~)
+    // 设定标准: 每一题只要任意选项都算对吗? 但为了有趣的答题 & 仪式感，我们设定只要回答三题即可展示浪漫回应? 
+    // 但最好有"必须每道题都选完"就解锁全部浪漫? 但为了答题性质，我们设定正确的“心意”不需判错，而是答完就解锁真情书!
+    // 但是为了增加“认真答题”性质，做成累积答完3个问题，自动生成最终浪漫表白信，不做正确性限制，但保留“每一题都是我们回忆的答案”，体现浪漫。
+    // 为了更有“答题互动”，我将设计为: 回答完所有题目自动弹出表白信，不判断对错，因为对罗泽亨的爱没有错! 但加点甜蜜惊喜: 选择任意选项都会有“温暖反馈”。
+    // 但是为了“简单浪漫具备答题性质”，最好保证全部作答完成，展示特别情书! 也符合题意。
+    
+    // 更好体验: 显示当前第几题，存储答案，全部完成就显示love letter，同时隐藏题目区
+    // 为了方便，做个响应式状态管理。
+
+    let currentIndex = 0;          // 0~2
+    let userAnswers = [null, null, null];   // 存储每道题选择的选项文本
+
+    // DOM 元素
+    const questionsArea = document.getElementById('questionsArea');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const progressFill = document.getElementById('progressFill');
+    const progressTextSpan = document.getElementById('progressText');
+    const quizPanel = document.getElementById('quizPanel');
+
+    // 辅助更新进度条
+    function updateProgress() {
+        const answeredCount = userAnswers.filter(a => a !== null).length;
+        const percent = (answeredCount / QUESTIONS.length) * 100;
+        progressFill.style.width = `${percent}%`;
+        progressTextSpan.innerText = `${answeredCount}/${QUESTIONS.length}`;
+    }
+
+    // 渲染当前题目
+    function renderCurrentQuestion() {
+        const q = QUESTIONS[currentIndex];
+        const currentAnswer = userAnswers[currentIndex];
+
+        let optionsHtml = '';
+        const prefixLetters = ['A', 'B', 'C', 'D'];
+        q.options.forEach((opt, idx) => {
+            const isSelected = (currentAnswer === opt);
+            const selectedClass = isSelected ? 'selected' : '';
+            optionsHtml += `
+                <div class="option ${selectedClass}" data-opt-index="${idx}" data-opt-value="${escapeHtml(opt)}">
+                    <div class="option-prefix">${prefixLetters[idx]}</div>
+                    <span>${escapeHtml(opt)}</span>
+                </div>
+            `;
+        });
+
+        const html = `
+            <div class="question-box">
+                <div class="question-text">${escapeHtml(q.text)}</div>
+                <div class="options" id="optionsContainer">
+                    ${optionsHtml}
+                </div>
+            </div>
+        `;
+        questionsArea.innerHTML = html;
+
+        // 绑定选项点击事件
+        const optionDivs = document.querySelectorAll('.option');
+        optionDivs.forEach(optDiv => {
+            optDiv.addEventListener('click', (e) => {
+                // 避免冒泡
+                const optValue = optDiv.getAttribute('data-opt-value');
+                if (optValue) {
+                    // 更新答案
+                    userAnswers[currentIndex] = optValue;
+                    // 重新渲染当前题目以高亮新选项
+                    renderCurrentQuestion();
+                    updateProgress();
+
+                    // 加入小小的温暖震动反馈（可选）,且不自动跳题，由用户点下一题
+                    // 爱心小动画飘浮一下，制造心动感
+                    createFloatingHeartForClick(e);
+                }
+            });
+        });
+    }
+
+    // 辅助转义
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+            return c;
+        });
+    }
+
+    // 点击产生飘浮小心心特效
+    function createFloatingHeartForClick(e) {
+        const heartSpan = document.createElement('div');
+        heartSpan.innerText = '💖';
+        heartSpan.style.position = 'fixed';
+        heartSpan.style.left = (e.clientX - 12) + 'px';
+        heartSpan.style.top = (e.clientY - 12) + 'px';
+        heartSpan.style.fontSize = '28px';
+        heartSpan.style.pointerEvents = 'none';
+        heartSpan.style.zIndex = '9999';
+        heartSpan.style.opacity = '1';
+        heartSpan.style.transition = 'all 0.8s ease-out';
+        heartSpan.style.filter = 'drop-shadow(0 0 4px #ff99bb)';
+        document.body.appendChild(heartSpan);
+        setTimeout(() => {
+            heartSpan.style.transform = 'translateY(-80px) scale(0.5)';
+            heartSpan.style.opacity = '0';
+            setTimeout(() => heartSpan.remove(), 800);
+        }, 10);
+    }
+
+    // 检查是否全部答完 -> 显示表白信并替换内容
+    function checkAndShowLoveLetter() {
+        const allAnswered = userAnswers.every(ans => ans !== null);
+        if (allAnswered) {
+            // 全部答完，展示浪漫表白信，隐藏原本的题目面板区域并替换内容
+            // 但由于我们要保留完整卡片风格，优雅替换quizPanel内部内容
+            const finishedHtml = `
+                <div class="love-letter">
+                    <div class="big-heart">💗💌💗</div>
+                    <h2>✨ 给 罗泽亨 的专属告白 ✨</h2>
+                    <p>🌹 亲爱的罗泽亨 🌹<br><br>
+                    当我完成这三道关于你的题目，心里满满的都是甜。<br>
+                    你的名字早已是我心底最柔软的韵脚。<br><br>
+                    我想对你说：<br>
+                    <strong>“遇见你，是我这一生最浪漫的意外。</strong><br>
+                    <strong>喜欢你，无关风月，只关乎朝朝夕夕。” </strong><br><br>
+                    你像夏天橘子汽水，也像冬日热可可，<br>
+                    每一个关于你的答案都是心动本身 💕<br><br>
+                    ✨ 可以做我故事里的唯一主角吗？ ✨
+                    </p>
+                    <div style="font-size:2rem;">🍬 罗泽亨 · 喜欢你 🍬</div>
+                    <div class="big-heart">❤️🧡💛</div>
+                    <button class="reset-btn" id="resetBtn">💘 再答一次，让心动加倍 💘</button>
+                </div>
+            `;
+            quizPanel.innerHTML = finishedHtml;
+            // 重新绑定重置按钮
+            const resetBtn = document.getElementById('resetBtn');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', () => {
+                    resetQuiz();
+                });
+            }
+            // 追加额外的飘浮浪漫效果，背景大量爱心
+            triggerConfettiHearts();
+        }
+    }
+
+    // 重置整个答题环节
+    function resetQuiz() {
+        // 重置数据
+        currentIndex = 0;
+        userAnswers = [null, null, null];
+        // 恢复原始的 quizPanel 结构
+        quizPanel.innerHTML = `
+            <div class="progress-area">
+                <span>🌸 答题进度</span>
+                <div class="progress-bar-bg"><div class="progress-fill" id="progressFill"></div></div>
+                <span id="progressText">0/3</span>
+            </div>
+            <div id="questionsArea"></div>
+            <div class="actions">
+                <button class="btn btn-secondary" id="prevBtn">◀ 上一题</button>
+                <button class="btn btn-primary" id="nextBtn">下一题 ▶</button>
+            </div>
+            <footer>❤️ 每一题都是心动暗号 ❤️</footer>
+        `;
+
+        // 重新获取DOM引用
+        window.progressFill = document.getElementById('progressFill');
+        window.progressTextSpan = document.getElementById('progressText');
+        const newPrevBtn = document.getElementById('prevBtn');
+        const newNextBtn = document.getElementById('nextBtn');
+        // 重新绑定全局变量
+        if (newPrevBtn) newPrevBtn.addEventListener('click', () => { if(currentIndex > 0) { currentIndex--; renderCurrentQuestion(); updateProgress(); } });
+        if (newNextBtn) newNextBtn.addEventListener('click', () => { 
+            if (userAnswers[currentIndex] === null) {
+                // 提示一下选一个选项再下一题
+                showGentleToast('💝 请先选择一个甜蜜答案再继续呀~', '#ff8dab');
+                return;
+            }
+            if (currentIndex < QUESTIONS.length - 1) {
+                currentIndex++;
+                renderCurrentQuestion();
+                updateProgress();
+            } else {
+                // 已经是最后一题并且点下一题，如果所有题目都选了就展示表白!!
+                if (userAnswers.every(ans => ans !== null)) {
+                    checkAndShowLoveLetter();
+                } else {
+                    showGentleToast('🌷 好像还有题目没完成，快填满你的心意吧 🌷', '#f07a9b');
+                }
+            }
+        });
+
+        // 重置索引
+        currentIndex = 0;
+        renderCurrentQuestion();
+        updateProgress();
+        // 绑定全局事件重设
+        document.getElementById('prevBtn').addEventListener('click', () => { if(currentIndex > 0) { currentIndex--; renderCurrentQuestion(); updateProgress(); } });
+        // 注意 next 监听要覆盖上面的新按钮，但因重新绑定，重新获取
+        const nextBtnBind = document.getElementById('nextBtn');
+        const prevBtnBind = document.getElementById('prevBtn');
+        // 移除潜在旧监听器方式: 采用新绑，避免重复，但没关系 refresh 后之前事件已清除
+        // 最好重新绑定
+        if (nextBtnBind) {
+            nextBtnBind.onclick = () => {
+                if (userAnswers[currentIndex] === null) {
+                    showGentleToast('💖 选择一个最让你心动的答案~', '#ff80a5');
+                    return;
+                }
+                if (currentIndex < QUESTIONS.length - 1) {
+                    currentIndex++;
+                    renderCurrentQuestion();
+                    updateProgress();
+                } else {
+                    if (userAnswers.every(ans => ans !== null)) {
+                        checkAndShowLoveLetter();
+                    } else {
+                        showGentleToast('💕 就差一点点啦！答完就可以看情书咯 💕', '#e96c8f');
+                    }
+                }
+            };
+        }
+        if (prevBtnBind) {
+            prevBtnBind.onclick = () => {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    renderCurrentQuestion();
+                    updateProgress();
+                } else {
+                    showGentleToast('🌙 这是第一题，往后翻更甜蜜哦', '#c48b9f');
+                }
+            };
+        }
+    }
+
+    // 温柔小toast提示
+    function showGentleToast(msg, bgColor = '#ff9cbb') {
+        let toast = document.createElement('div');
+        toast.innerText = msg;
+        toast.style.position = 'fixed';
+        toast.style.bottom = '30px';
+        toast.style.left = '50%';
+        toast.style.transform = 'translateX(-50%)';
+        toast.style.backgroundColor = bgColor;
+        toast.style.color = 'white';
+        toast.style.padding = '10px 24px';
+        toast.style.borderRadius = '60px';
+        toast.style.fontWeight = 'bold';
+        toast.style.zIndex = '9999';
+        toast.style.boxShadow = '0 8px 20px rgba(0,0,0,0.1)';
+        toast.style.backdropFilter = 'blur(4px)';
+        toast.style.fontSize = '0.9rem';
+        toast.style.whiteSpace = 'nowrap';
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 500);
+        }, 1800);
+    }
+
+    // 浪漫爱心雨
+    function triggerConfettiHearts() {
+        for(let i=0;i<45;i++) {
+            setTimeout(() => {
+                const heartDiv = document.createElement('div');
+                heartDiv.innerText = ['💗','💖','💘','💝','❤️','🧡','💕','💞'][Math.floor(Math.random()*8)];
+                heartDiv.style.position = 'fixed';
+                heartDiv.style.left = Math.random() * 100 + '%';
+                heartDiv.style.top = '-30px';
+                heartDiv.style.fontSize = (20 + Math.random() * 30) + 'px';
+                heartDiv.style.opacity = '0.8';
+                heartDiv.style.pointerEvents = 'none';
+                heartDiv.style.zIndex = '999';
+                heartDiv.style.transition = 'all 3s ease-out';
+                heartDiv.style.animation = `floatHeart 2.5s linear forwards`;
+                document.body.appendChild(heartDiv);
+                setTimeout(() => heartDiv.remove(), 2800);
+            }, i * 70);
+        }
+    }
+
+    // 初始化飘浮背景爱心
+    function initBackgroundHearts() {
+        const container = document.getElementById('heartsContainer');
+        for(let i=0; i<35; i++) {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerText = ['❤️','💗','🌸','🌹','💖','💘'][Math.floor(Math.random()*6)];
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.fontSize = (12 + Math.random() * 28) + 'px';
+            heart.style.animationDuration = 8 + Math.random() * 12 + 's';
+            heart.style.animationDelay = Math.random() * 15 + 's';
+            heart.style.opacity = 0.3 + Math.random() * 0.4;
+            container.appendChild(heart);
+        }
+    }
+
+    // 启动一切
+    function init() {
+        initBackgroundHearts();
+        renderCurrentQuestion();
+        updateProgress();
+
+        // 按钮监听
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                renderCurrentQuestion();
+                updateProgress();
+            } else {
+                showGentleToast('🌷 起点就是你，直接答题吧～', '#f09bb3');
+            }
+        });
+        nextBtn.addEventListener('click', () => {
+            // 检查当前题目是否已选
+            if (userAnswers[currentIndex] === null) {
+                showGentleToast('🎀 选择一个答案再继续哟，让气氛更甜 🎀', '#ff88ae');
+                return;
+            }
+            if (currentIndex < QUESTIONS.length - 1) {
+                currentIndex++;
+                renderCurrentQuestion();
+                updateProgress();
+            } else {
+                // 已经是最后一题且按下了，验证是否全部答完
+                if (userAnswers.every(ans => ans !== null)) {
+                    checkAndShowLoveLetter();
+                } else {
+                    showGentleToast('💌 还差一点点啦！快把全部心意填满吧 💌', '#f0698f');
+                }
+            }
+        });
+    }
+    init();
+</script>
+</body>
+</html>
